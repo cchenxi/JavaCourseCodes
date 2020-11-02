@@ -1,5 +1,11 @@
 package io.github.kimmking.gateway.outbound.okhttp;
 
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import io.github.kimmking.gateway.outbound.httpclient4.NamedThreadFactory;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -19,17 +25,28 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 public class OkHttpOutboundHandler {
     private String backendUrl;
     private OkHttpClient okHttpClient;
+    private ExecutorService proxyService;
 
     public OkHttpOutboundHandler(String backendUrl) {
         this.backendUrl = backendUrl.endsWith("/") ? backendUrl.substring(0, backendUrl.length() - 1) : backendUrl;
         okHttpClient = new OkHttpClient();
+        int cores = Runtime.getRuntime().availableProcessors() * 2;
+        long keepAliveTime = 1000;
+        int queueSize = 2048;
+        proxyService = new ThreadPoolExecutor(cores, cores, keepAliveTime, TimeUnit.MILLISECONDS,
+                new ArrayBlockingQueue<>(queueSize),
+                new NamedThreadFactory("proxyService"),
+                new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
     public void handle(final FullHttpRequest fullRequest, final ChannelHandlerContext ctx) {
         final String url = this.backendUrl + fullRequest.uri();
-        Request request  = new Request.Builder().url(url).build();
+        proxyService.submit(() -> fetchGet(fullRequest, ctx, url));
+    }
 
+    private void fetchGet(final FullHttpRequest fullRequest, final ChannelHandlerContext ctx, final String url) {
         try {
+            Request request  = new Request.Builder().url(url).build();
             Response response = okHttpClient.newCall(request).execute();
             handleResponse(fullRequest, ctx, response);
         } catch (Exception e) {
@@ -37,7 +54,7 @@ public class OkHttpOutboundHandler {
         }
     }
 
-    private void handleResponse(final FullHttpRequest fullRequest, final ChannelHandlerContext ctx, final Response response) throws Exception {
+    private void handleResponse(final FullHttpRequest fullRequest, final ChannelHandlerContext ctx, final Response response) {
         FullHttpResponse fullHttpResponse = null;
         try {
             ResponseBody responseBody = response.body();
