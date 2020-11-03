@@ -51,6 +51,11 @@ public class NettyHttpClient {
             request.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
             request.headers().set(HttpHeaderNames.ACCEPT_ENCODING, HttpHeaderValues.GZIP);
 
+            // 自定义Headers
+            String headerNio = fullRequest.headers().get("nio");
+            System.out.println("自定义请求头 nio:" + headerNio);
+            request.headers().set("nio", headerNio);
+
             channel.writeAndFlush(request);
 
             channel.closeFuture().sync();
