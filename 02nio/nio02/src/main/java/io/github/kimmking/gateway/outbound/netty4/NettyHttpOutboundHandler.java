@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import io.github.kimmking.gateway.outbound.httpclient4.NamedThreadFactory;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
+import lombok.Setter;
 
 /**
  * Date: 2020-11-03
@@ -15,11 +16,12 @@ import io.netty.handler.codec.http.FullHttpRequest;
  * @author chenxi
  */
 public class NettyHttpOutboundHandler {
+
+    @Setter
     private String backendUrl;
     private ExecutorService proxyService;
 
-    public NettyHttpOutboundHandler(String backendUrl) {
-        this.backendUrl = backendUrl;
+    public NettyHttpOutboundHandler() {
         int cores = Runtime.getRuntime().availableProcessors() * 2;
         long keepAliveTime = 1000;
         int queueSize = 2048;

@@ -21,6 +21,7 @@ public class HttpInboundInitializer extends ChannelInitializer<SocketChannel> {
         p.addLast(new HttpServerCodec());
         p.addLast(new HttpObjectAggregator(1024 * 1024));
         p.addLast(new HttpRequestFilterHandler());
-        p.addLast(new HttpInboundHandler(this.proxyServer));
+        p.addLast(new HttpEndpointRouterHandler());
+        p.addLast(new HttpInboundHandler());
     }
 }

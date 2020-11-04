@@ -49,6 +49,7 @@ public class NettyHttpClientOutboundHandler extends ChannelInboundHandlerAdapter
             ByteBuf byteBuf = content.content();
 
             String responseContent = byteBuf.toString(StandardCharsets.UTF_8);
+            System.out.println("内部请求响应content:" + responseContent);
 
             FullHttpResponse fullHttpResponse = null;
             try {
