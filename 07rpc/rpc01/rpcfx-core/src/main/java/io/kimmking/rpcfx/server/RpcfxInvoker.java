@@ -23,13 +23,14 @@ public class RpcfxInvoker {
         String serviceClass = request.getServiceClass();
 
         // 作业1：改成泛型和反射
-        Object service = resolver.resolve(serviceClass);//this.applicationContext.getBean(serviceClass);
+        Object service = resolver.resolve(serviceClass);
 
         try {
             Method method = resolveMethodFromClass(service.getClass(), request.getMethod());
             Object result = method.invoke(service, request.getParams()); // dubbo, fastjson,
             // 两次json序列化能否合并成一个
-            response.setResult(JSON.toJSONString(result, SerializerFeature.WriteClassName));
+//            response.setResult(JSON.toJSONString(result, SerializerFeature.WriteClassName));
+            response.setResult(result);
             response.setStatus(true);
             return response;
         } catch ( IllegalAccessException | InvocationTargetException e) {

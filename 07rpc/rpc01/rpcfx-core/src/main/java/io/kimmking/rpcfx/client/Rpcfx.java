@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.parser.ParserConfig;
 import io.kimmking.rpcfx.api.RpcfxRequest;
 import io.kimmking.rpcfx.api.RpcfxResponse;
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.implementation.InvocationHandlerAdapter;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -22,10 +24,22 @@ public final class Rpcfx {
     }
 
     public static <T> T create(final Class<T> serviceClass, final String url) {
-
         // 0. 替换动态代理 -> AOP
-        return (T) Proxy.newProxyInstance(Rpcfx.class.getClassLoader(), new Class[]{serviceClass}, new RpcfxInvocationHandler(serviceClass, url));
+//        return (T) Proxy.newProxyInstance(Rpcfx.class.getClassLoader(), new Class[]{serviceClass}, new RpcfxInvocationHandler(serviceClass, url));
 
+        try {
+
+            return (T) new ByteBuddy()
+                    .subclass(Object.class)
+                    .implement(serviceClass)
+                    .intercept(InvocationHandlerAdapter.of(new RpcfxInvocationHandler(serviceClass, url)))
+                    .make()
+                    .load(serviceClass.getClassLoader())
+                    .getLoaded()
+                    .newInstance();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public static class RpcfxInvocationHandler implements InvocationHandler {
@@ -55,7 +69,7 @@ public final class Rpcfx {
             // 这里判断response.status，处理异常
             // 考虑封装一个全局的RpcfxException
 
-            return JSON.parse(response.getResult().toString());
+            return JSON.parseObject(response.getResult().toString(), method.getReturnType());
         }
 
         private RpcfxResponse post(RpcfxRequest req, String url) throws IOException {
