@@ -6,7 +6,7 @@ public class RpcfxResponse {
 
     private boolean status;
 
-    private Exception exception;
+    private RpcfxException exception;
 
     public Object getResult() {
         return result;
@@ -24,11 +24,11 @@ public class RpcfxResponse {
         this.status = status;
     }
 
-    public Exception getException() {
+    public RpcfxException getException() {
         return exception;
     }
 
-    public void setException(Exception exception) {
+    public void setException(RpcfxException exception) {
         this.exception = exception;
     }
 }
