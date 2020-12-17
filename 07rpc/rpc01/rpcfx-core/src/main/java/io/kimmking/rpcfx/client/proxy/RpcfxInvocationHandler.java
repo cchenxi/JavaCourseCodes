@@ -6,7 +6,6 @@ import io.kimmking.rpcfx.api.RpcfxRequest;
 import io.kimmking.rpcfx.api.RpcfxResponse;
 import io.kimmking.rpcfx.client.OkHttpTools;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.MediaType;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
@@ -22,8 +21,6 @@ public class RpcfxInvocationHandler implements InvocationHandler {
     static {
         ParserConfig.getGlobalInstance().addAccept("io.kimmking");
     }
-
-    public static final MediaType JSONTYPE = MediaType.get("application/json; charset=utf-8");
 
     private final Class<?> serviceClass;
     private final String url;
