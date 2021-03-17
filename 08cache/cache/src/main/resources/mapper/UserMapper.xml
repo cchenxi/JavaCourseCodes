@@ -12,6 +12,11 @@
         <result column="name" jdbcType="VARCHAR" property="name" />
         <result column="age" jdbcType="INTEGER" property="age" />
     </resultMap>
+    <insert id="create" parameterType="io.kimmking.cache.entity.User">
+        insert into user
+        (name, age) values
+        (#{name}, #{age})
+    </insert>
 
     <select id="find" resultType="io.kimmking.cache.entity.User">
         select * from user where id = #{id}
@@ -21,4 +26,16 @@
         select * from user
     </select>
 
+    <update id="update" parameterType="io.kimmking.cache.entity.User">
+        update user
+        <set>
+            <if test="name != null">name=#{name},</if>
+            <if test="age != null">age=#{age}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+        delete from user where id = #{id}
+    </delete>
 </mapper>

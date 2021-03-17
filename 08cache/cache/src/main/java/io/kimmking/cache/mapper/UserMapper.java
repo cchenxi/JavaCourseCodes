@@ -7,9 +7,13 @@ import java.util.List;
 
 @Mapper
 public interface UserMapper {
+    void create(User user);
 
     User find(int id);
 
     List<User> list();
 
+    void update(User user);
+
+    void delete(int id);
 }

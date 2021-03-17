@@ -4,7 +4,11 @@ import io.kimmking.cache.entity.User;
 import io.kimmking.cache.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -12,20 +16,34 @@ import java.util.List;
 @RestController
 @EnableAutoConfiguration
 public class UserController {
-
     @Autowired
     UserService userService;
+
+    @PostMapping("/user/create")
+    public String create(@RequestBody User user) {
+        userService.create(user);
+        return "ok";
+    }
     
-    @RequestMapping("/user/find")
-    User find(Integer id) {
+    @GetMapping("/user/find")
+    public User find(Integer id) {
         return userService.find(id);
-        //return new User(1,"KK", 28);
     }
 
-    @RequestMapping("/user/list")
-    List<User> list() {
+    @GetMapping("/user/list")
+    public List<User> list() {
         return userService.list();
-//        return Arrays.asList(new User(1,"KK", 28),
-//                             new User(2,"CC", 18));
+    }
+
+    @PutMapping("/user/update")
+    public String update(@RequestBody User user) {
+        userService.update(user);
+        return "ok";
+    }
+
+    @DeleteMapping("/user/delete")
+    public String delete(Integer id) {
+        userService.delete(id);
+        return "ok";
     }
 }

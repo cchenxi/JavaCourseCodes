@@ -7,9 +7,13 @@ import java.util.List;
 
 @CacheConfig(cacheNames = "users")
 public interface UserService {
+    void create(User user);
 
     User find(int id);
 
     List<User> list();
 
+    User update(User user);
+
+    void delete(int id);
 }
