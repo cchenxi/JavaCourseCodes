@@ -8,6 +8,8 @@ import io.netty.util.AttributeKey;
  * @author chenxi
  */
 public interface Attributes {
-    // 代理地址
+    // 代理地址（路由前）
+    AttributeKey<String> PROXY_SERVERS = AttributeKey.newInstance("proxyServers");
+    // 最终代理地址（路由后）
     AttributeKey<String> PROXY_SERVER = AttributeKey.newInstance("proxyServer");
 }

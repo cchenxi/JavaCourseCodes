@@ -5,7 +5,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import io.github.kimmking.gateway.outbound.OutboundHandler;
 import io.github.kimmking.gateway.outbound.httpclient4.NamedThreadFactory;
+import io.github.kimmking.gateway.outbound.netty4.client.NettyHttpClient;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import lombok.Setter;
@@ -15,7 +17,7 @@ import lombok.Setter;
  *
  * @author chenxi
  */
-public class NettyHttpOutboundHandler {
+public class NettyHttpOutboundHandler implements OutboundHandler {
 
     @Setter
     private String backendUrl;
@@ -31,6 +33,7 @@ public class NettyHttpOutboundHandler {
                 new ThreadPoolExecutor.CallerRunsPolicy());
     }
 
+    @Override
     public void handle(final FullHttpRequest fullRequest, final ChannelHandlerContext ctx) {
         proxyService.submit(() -> {
             NettyHttpClient nettyHttpClient = new NettyHttpClient(backendUrl);

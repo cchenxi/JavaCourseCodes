@@ -1,4 +1,4 @@
-package io.github.kimmking.gateway.outbound.netty4;
+package io.github.kimmking.gateway.outbound.netty4.client;
 
 import java.nio.charset.StandardCharsets;
 
