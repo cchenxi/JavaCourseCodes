@@ -24,6 +24,7 @@ public class HttpInboundInitializer extends ChannelInitializer<SocketChannel> {
         // 使用 channel的attr传递网关代理的实际应用地址
         ch.attr(Attributes.PROXY_SERVERS).set(this.proxyServers);
 
+        // 请求解码 和 响应编码
         p.addLast(new HttpServerCodec());
         p.addLast(new HttpObjectAggregator(1024 * 1024));
         // 处理请求头
