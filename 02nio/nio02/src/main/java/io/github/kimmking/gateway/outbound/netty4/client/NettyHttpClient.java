@@ -2,6 +2,7 @@ package io.github.kimmking.gateway.outbound.netty4.client;
 
 import java.net.URL;
 
+import io.github.kimmking.gateway.attribute.Attributes;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -21,12 +22,6 @@ import io.netty.handler.codec.http.HttpResponseDecoder;
 import io.netty.handler.codec.http.HttpVersion;
 
 public class NettyHttpClient {
-    private String backendUrl;
-
-    public NettyHttpClient(String backendUrl) {
-        this.backendUrl = backendUrl;
-    }
-
     public void fetchGet(final FullHttpRequest fullRequest, final ChannelHandlerContext ctx) {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
@@ -43,6 +38,7 @@ public class NettyHttpClient {
                 }
             });
 
+            String backendUrl = ctx.channel().attr(Attributes.PROXY_SERVER).get();
             URL url = new URL(backendUrl);
             Channel channel = b.connect(url.getHost(), url.getPort()).sync().channel();
 

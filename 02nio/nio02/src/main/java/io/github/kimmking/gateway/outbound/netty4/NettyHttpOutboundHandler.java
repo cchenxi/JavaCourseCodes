@@ -10,7 +10,6 @@ import io.github.kimmking.gateway.outbound.httpclient4.NamedThreadFactory;
 import io.github.kimmking.gateway.outbound.netty4.client.NettyHttpClient;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
-import lombok.Setter;
 
 /**
  * Date: 2020-11-03
@@ -19,8 +18,6 @@ import lombok.Setter;
  */
 public class NettyHttpOutboundHandler implements OutboundHandler {
 
-    @Setter
-    private String backendUrl;
     private ExecutorService proxyService;
 
     public NettyHttpOutboundHandler() {
@@ -35,9 +32,6 @@ public class NettyHttpOutboundHandler implements OutboundHandler {
 
     @Override
     public void handle(final FullHttpRequest fullRequest, final ChannelHandlerContext ctx) {
-        proxyService.submit(() -> {
-            NettyHttpClient nettyHttpClient = new NettyHttpClient(backendUrl);
-            nettyHttpClient.fetchGet(fullRequest, ctx);
-        });
+        proxyService.submit(() -> new NettyHttpClient().fetchGet(fullRequest, ctx));
     }
 }

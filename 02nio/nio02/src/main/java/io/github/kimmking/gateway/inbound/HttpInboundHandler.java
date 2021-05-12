@@ -22,10 +22,7 @@ public class HttpInboundHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         try {
-            FullHttpRequest fullRequest = (FullHttpRequest) msg;
-            String backendUrl = ctx.channel().attr(Attributes.PROXY_SERVER).get();
-            handler.setBackendUrl(backendUrl);
-            handler.handle(fullRequest, ctx);
+            handler.handle((FullHttpRequest) msg, ctx);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
