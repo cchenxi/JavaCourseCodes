@@ -32,6 +32,6 @@ public class NettyHttpOutboundHandler implements OutboundHandler {
 
     @Override
     public void handle(final FullHttpRequest fullRequest, final ChannelHandlerContext ctx) {
-        proxyService.submit(() -> new NettyHttpClient().fetchGet(fullRequest, ctx));
+        proxyService.execute(() -> new NettyHttpClient().fetchGet(fullRequest, ctx));
     }
 }
