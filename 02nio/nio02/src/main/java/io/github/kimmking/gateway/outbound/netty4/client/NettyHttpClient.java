@@ -21,6 +21,9 @@ import io.netty.handler.codec.http.HttpRequestEncoder;
 import io.netty.handler.codec.http.HttpResponseDecoder;
 import io.netty.handler.codec.http.HttpVersion;
 
+/**
+ * netty http 客户端
+ */
 public class NettyHttpClient {
     public void fetchGet(final FullHttpRequest fullRequest, final ChannelHandlerContext ctx) {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -29,14 +32,7 @@ public class NettyHttpClient {
             b.group(workerGroup);
             b.channel(NioSocketChannel.class);
             b.option(ChannelOption.SO_KEEPALIVE, true);
-            b.handler(new ChannelInitializer<SocketChannel>() {
-                @Override
-                public void initChannel(SocketChannel ch) throws Exception {
-                    ch.pipeline().addLast(new HttpResponseDecoder());
-                    ch.pipeline().addLast(new HttpRequestEncoder());
-                    ch.pipeline().addLast(new NettyHttpClientOutboundHandler(ctx));
-                }
-            });
+            b.handler(new NettyHttpClientOutboundInitializer(ctx));
 
             String backendUrl = ctx.channel().attr(Attributes.PROXY_SERVER).get();
             URL url = new URL(backendUrl);

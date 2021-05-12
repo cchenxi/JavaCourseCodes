@@ -1,6 +1,7 @@
 package io.github.kimmking.gateway.inbound;
 
 import io.github.kimmking.gateway.attribute.Attributes;
+import io.github.kimmking.gateway.outbound.netty4.client.NettyHttpClientOutboundInitializer;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -24,7 +25,10 @@ public class HttpInboundInitializer extends ChannelInitializer<SocketChannel> {
         // 使用 channel的attr传递网关代理的实际应用地址
         ch.attr(Attributes.PROXY_SERVERS).set(this.proxyServers);
 
-        // 请求解码 和 响应编码
+        /**
+         * 请求解码 和 响应编码
+         * @see NettyHttpClientOutboundInitializer#initChannel(io.netty.channel.socket.SocketChannel)
+         */
         p.addLast(new HttpServerCodec());
         p.addLast(new HttpObjectAggregator(1024 * 1024));
         // 处理请求头
